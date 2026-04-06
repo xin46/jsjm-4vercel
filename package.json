@@ -1,7 +1,7 @@
 {
   "name": "decode-js",
   "scripts": {
-    "start": "node api/index.js",
+    "start": "node api/index.js"
   },
   "dependencies": {
     "@babel/generator": "^7.17.10",
