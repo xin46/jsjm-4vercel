@@ -18,16 +18,45 @@ function decode(plugin, code) {
   }
 }
 
-// 异步解析 JSON 请求体
+// 解析 URL 编码参数
+function parseUrlEncoded(body) {
+  const params = new URLSearchParams(body);
+  const result = {};
+  for (const [key, value] of params) {
+    result[key] = value;
+  }
+  return result;
+}
+
+// 异步解析请求体（支持 JSON 和 URL 编码）
 async function parseBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
       try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch {
-        reject(new Error('Invalid JSON'));
+        if (!body) return resolve({});
+        
+        const contentType = req.headers['content-type'] || '';
+        
+        // JSON 格式
+        if (contentType.includes('application/json')) {
+          resolve(JSON.parse(body));
+        }
+        // URL 编码格式
+        else if (contentType.includes('application/x-www-form-urlencoded')) {
+          resolve(parseUrlEncoded(body));
+        }
+        // 默认尝试 JSON，失败则尝试 URL 编码
+        else {
+          try {
+            resolve(JSON.parse(body));
+          } catch {
+            resolve(parseUrlEncoded(body));
+          }
+        }
+      } catch (err) {
+        reject(new Error('Invalid request body'));
       }
     });
     req.on('error', reject);
@@ -72,7 +101,7 @@ module.exports = async (req, res) => {
   try {
     body = await parseBody(req);
   } catch {
-    res.status(400).json({ code: 0, msg: 'Invalid JSON body' });
+    res.status(400).json({ code: 0, msg: 'Invalid request body' });
     return;
   }
 
