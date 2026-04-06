@@ -1,19 +1,25 @@
 {
   "name": "decode-js",
   "scripts": {
-    "start": "node api/index.js",
-    "decode": "node api/index.js"
-  },
-  "engines": {
-    "node": "24.x"
+    "decode": "node src/main.js",
+    "deob": "node src/main.js -t obfuscator",
+    "deso": "node src/main.js -t sojson",
+    "desov7": "node src/main.js -t sojsonv7",
+    "api_v7": "node src/api.js",
+    "lint": "eslint --ext .js --fix src"
   },
   "dependencies": {
-    "@babel/generator": "^7.25.0",
-    "@babel/parser": "^7.25.0",
-    "@babel/traverse": "^7.25.2",
-    "@babel/types": "^7.25.0",
-    "express": "^4.18.0",
-    "body-parser": "^1.20.0",
-    "serverless-http": "^3.2.0"
+    "@babel/generator": "^7.17.10",
+    "@babel/parser": "^7.17.10",
+    "@babel/traverse": "^7.17.10",
+    "@babel/types": "^7.17.10",
+    "body-parser": "^1.20.2",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "prettier": "^2.7.1",
+    "vm2": "^3.9.11"
   }
 }
